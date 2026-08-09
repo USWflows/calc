@@ -3,22 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TI-84 Plus CE - Ultra-Realistic Scientific Graphing Calculator</title>
+  <title>TI-84 Plus CE - Ultimate Scientific Graphing Calculator</title>
   <style>
     :root {
-      /* Realistic Body Colors */
       --case-main: #181b20;
       --case-gradient: linear-gradient(165deg, #2a2e37 0%, #16181d 50%, #0d0e11 100%);
       --case-side: #090a0c;
       --bezel-dark: #0f1115;
       
-      /* Display Screen Colors (Realistic Matte Dark LCD) */
       --screen-bg: #1c241c;
       --screen-text: #8fb38b;
       --screen-dim: rgba(143, 179, 139, 0.4);
-      --screen-pixel-grid: rgba(0, 0, 0, 0.25);
+      --screen-highlight: #b2d8ad;
       
-      /* Button Palette */
       --btn-gray: #3a414d;
       --btn-gray-side: #1f232b;
       --btn-dark: #292d36;
@@ -49,9 +46,8 @@
       padding: 20px 0;
     }
 
-    /* Calculator Shell Chassis */
     .calculator-chassis {
-      width: 470px;
+      width: 490px;
       background: var(--case-gradient);
       border-radius: 36px 36px 48px 48px;
       padding: 24px 22px 32px 22px;
@@ -61,17 +57,16 @@
         inset -2px -3px 6px rgba(0, 0, 0, 0.8),
         0 20px 0 var(--case-side);
       transform-style: preserve-3d;
-      transform: rotateX(10deg) rotateY(-1deg);
+      transform: rotateX(8deg) rotateY(0deg);
       transition: transform 0.25s ease-out;
       position: relative;
       border: 1px solid #333a46;
     }
 
     .calculator-chassis:hover {
-      transform: rotateX(2deg) rotateY(0deg);
+      transform: rotateX(0deg) rotateY(0deg);
     }
 
-    /* Top Branding Row */
     .brand-header {
       display: flex;
       justify-content: space-between;
@@ -82,7 +77,7 @@
 
     .logo {
       color: #9ca3af;
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       font-weight: 800;
       letter-spacing: 1.5px;
     }
@@ -90,15 +85,14 @@
     .logo span { color: var(--sub-blue); }
 
     .solar-strip {
-      width: 80px;
-      height: 16px;
+      width: 85px;
+      height: 18px;
       background: linear-gradient(90deg, #2b1100, #4a1f00, #2b1100);
       border-radius: 3px;
       border: 1px solid #140700;
       box-shadow: inset 0 1px 3px rgba(0,0,0,0.9);
     }
 
-    /* Screen Housing Frame */
     .screen-bezel {
       background: var(--bezel-dark);
       padding: 12px;
@@ -108,10 +102,9 @@
       margin-bottom: 18px;
     }
 
-    /* Matte Dark LCD Glass Screen */
     .screen-glass {
       background: var(--screen-bg);
-      height: 185px;
+      height: 210px;
       border-radius: 6px;
       padding: 8px 12px;
       display: flex;
@@ -125,17 +118,16 @@
       border: 1px solid #2d3b2d;
     }
 
-    /* Subpixel Scanlines & Anti-Glare Vignette */
     .screen-glass::before {
       content: "";
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
       background: 
-        linear-gradient(rgba(0,0,0,0.15) 50%, rgba(0, 0, 0, 0) 50%),
-        radial-gradient(circle at 50% 50%, transparent 60%, rgba(0,0,0,0.4) 100%);
+        linear-gradient(rgba(0,0,0,0.12) 50%, rgba(0, 0, 0, 0) 50%),
+        radial-gradient(circle at 50% 50%, transparent 60%, rgba(0,0,0,0.35) 100%);
       background-size: 100% 3px, 100% 100%;
       pointer-events: none;
-      z-index: 3;
+      z-index: 5;
     }
 
     .status-bar {
@@ -147,7 +139,7 @@
       font-weight: bold;
       border-bottom: 1px dashed rgba(143, 179, 139, 0.25);
       padding-bottom: 4px;
-      z-index: 2;
+      z-index: 4;
     }
 
     .status-bar span.active {
@@ -155,26 +147,34 @@
       text-shadow: 0 0 5px rgba(143, 179, 139, 0.6);
     }
 
-    .screen-content {
+    .screen-view {
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
       font-family: 'Courier New', monospace;
-      z-index: 2;
+      z-index: 4;
+      overflow-y: auto;
     }
 
-    .history-line {
-      font-size: 0.95rem;
+    .history-log {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-height: 120px;
+      overflow-y: auto;
+      margin-bottom: 4px;
+    }
+
+    .history-entry {
+      font-size: 0.82rem;
       color: var(--screen-dim);
       text-align: right;
-      min-height: 1.3rem;
-      overflow: hidden;
-      white-space: nowrap;
+      word-break: break-all;
     }
 
     .main-line {
-      font-size: 1.85rem;
+      font-size: 1.7rem;
       font-weight: bold;
       color: var(--screen-text);
       text-align: right;
@@ -182,17 +182,38 @@
       text-shadow: 0 0 4px rgba(143, 179, 139, 0.5);
     }
 
-    /* Graph Canvas Viewport */
+    /* Modal Views inside LCD (Function Editor, Matrix, Stats) */
+    .lcd-modal {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+      font-family: 'Courier New', monospace;
+      color: var(--screen-text);
+      font-size: 0.82rem;
+      z-index: 4;
+    }
+
+    .lcd-modal input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--screen-dim);
+      color: var(--screen-text);
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      outline: none;
+      width: 80%;
+    }
+
     #graph-viewport {
       display: none;
       width: 100%;
-      height: 135px;
+      height: 160px;
       background: var(--screen-bg);
       border-radius: 4px;
-      z-index: 2;
+      z-index: 4;
     }
 
-    /* Function Key Row (F1-F5) */
     .f-key-row {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -200,7 +221,6 @@
       margin-bottom: 12px;
     }
 
-    /* Nav D-Pad Section */
     .control-row {
       display: grid;
       grid-template-columns: 1fr 1.2fr 1fr;
@@ -210,8 +230,8 @@
     }
 
     .dpad-container {
-      width: 86px;
-      height: 86px;
+      width: 88px;
+      height: 88px;
       background: #111317;
       border-radius: 50%;
       position: relative;
@@ -224,10 +244,10 @@
       background: #252a33;
       border: none;
       color: #9ca3af;
-      font-size: 0.65rem;
+      font-size: 0.68rem;
       cursor: pointer;
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -240,7 +260,6 @@
     .dpad-left { top: 29px; left: 2px; border-radius: 6px 0 0 6px; }
     .dpad-right { top: 29px; right: 2px; border-radius: 0 6px 6px 0; }
 
-    /* Button Grid Layout */
     .main-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -264,14 +283,13 @@
     .sub-2nd { font-size: 0.58rem; font-weight: 800; color: var(--sub-blue); }
     .sub-alpha { font-size: 0.58rem; font-weight: 800; color: var(--sub-green); }
 
-    /* Realistic Beveled Buttons */
     .btn {
       width: 100%;
       appearance: none;
       border: none;
       outline: none;
       padding: 9px 0;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
       border-radius: 5px;
       cursor: pointer;
@@ -288,7 +306,6 @@
       box-shadow: 0 1px 0 var(--btn-dark-side), 0 2px 3px rgba(0,0,0,0.6);
     }
 
-    /* Key Color Styles */
     .btn.blue { background: var(--btn-blue); box-shadow: 0 4px 0 var(--btn-blue-side); color: #fff; }
     .btn.blue:active { box-shadow: 0 1px 0 var(--btn-blue-side); }
 
@@ -311,7 +328,7 @@
 
   <div class="calculator-chassis">
     <div class="brand-header">
-      <div class="logo">TI-84 Plus CE <span>PYTHON</span></div>
+      <div class="logo">TI-84 Plus CE <span>ADVANCED</span></div>
       <div class="solar-strip"></div>
     </div>
 
@@ -326,19 +343,38 @@
 
         <canvas id="graph-viewport"></canvas>
 
-        <div class="screen-content" id="calc-screen">
-          <div class="history-line" id="hist-line"></div>
+        <div class="lcd-modal" id="modal-yedit">
+          <div><b>Function Editor ($Y=$)</b></div>
+          <div style="margin-top:6px;">Y1 = <input type="text" id="y1-in" value="sin(x)"></div>
+          <div style="margin-top:4px;">Y2 = <input type="text" id="y2-in" value="x^2 - 3"></div>
+          <div style="margin-top:4px;">Y3 = <input type="text" id="y3-in" value=""></div>
+          <div style="margin-top:10px; font-size: 0.7rem; color: var(--screen-dim)">Press [GRAPH] to Plot Viewport</div>
+        </div>
+
+        <div class="lcd-modal" id="modal-matrix">
+          <div><b>Matrix Operations</b></div>
+          <div style="margin-top:6px;">[A] = [[1, 2], [3, 4]]</div>
+          <div>[B] = [[5, 6], [7, 8]]</div>
+          <div style="margin-top:8px;">
+            <button style="font-size:0.7rem;" onclick="runMatrixOp('det')">Det([A])</button>
+            <button style="font-size:0.7rem;" onclick="runMatrixOp('inv')">Inv([A])</button>
+            <button style="font-size:0.7rem;" onclick="runMatrixOp('mult')">[A]x[B]</button>
+          </div>
+        </div>
+
+        <div class="screen-view" id="calc-screen">
+          <div class="history-log" id="hist-log"></div>
           <div class="main-line" id="main-line">0</div>
         </div>
       </div>
     </div>
 
     <div class="f-key-row">
-      <div class="key-wrapper"><div class="key-labels"><span class="sub-2nd">stat plot</span><span class="sub-alpha">f1</span></div><button class="btn gray" onclick="triggerGraph()">y=</button></div>
-      <div class="key-wrapper"><div class="key-labels"><span class="sub-2nd">tblset</span><span class="sub-alpha">f2</span></div><button class="btn gray" onclick="triggerGraph()">window</button></div>
+      <div class="key-wrapper"><div class="key-labels"><span class="sub-2nd">stat plot</span><span class="sub-alpha">f1</span></div><button class="btn gray" onclick="openYEdit()">y=</button></div>
+      <div class="key-wrapper"><div class="key-labels"><span class="sub-2nd">tblset</span><span class="sub-alpha">f2</span></div><button class="btn gray" onclick="openMatrix()">window</button></div>
       <div class="key-wrapper"><div class="key-labels"><span class="sub-2nd">format</span><span class="sub-alpha">f3</span></div><button class="btn gray" onclick="toggleAngle()">mode</button></div>
-      <div class="key-wrapper"><div class="key-labels"><span class="sub-2nd">calc</span><span class="sub-alpha">f4</span></div><button class="btn gray" onclick="triggerGraph()">trace</button></div>
-      <div class="key-wrapper"><div class="key-labels"><span class="sub-2nd">table</span><span class="sub-alpha">f5</span></div><button class="btn gray" onclick="triggerGraph()">graph</button></div>
+      <div class="key-wrapper"><div class="key-labels"><span class="sub-2nd">calc</span><span class="sub-alpha">f4</span></div><button class="btn gray" onclick="toggleGraph()">trace</button></div>
+      <div class="key-wrapper"><div class="key-labels"><span class="sub-2nd">table</span><span class="sub-alpha">f5</span></div><button class="btn gray" onclick="toggleGraph()">graph</button></div>
     </div>
 
     <div class="control-row">
@@ -370,7 +406,7 @@
       <div class="key-wrapper"><div class="key-labels"><span class="sub-2nd">n!</span><span class="sub-alpha">P</span></div><button class="btn" onclick="execFactorial()">n!</button></div>
       <div class="key-wrapper"><div class="key-labels"><span class="sub-2nd">d/dx</span></div><button class="btn" onclick="execDerivative()">d/dx</button></div>
       <div class="key-wrapper"><div class="key-labels"><span class="sub-2nd">∫dx</span></div><button class="btn" onclick="execIntegral()">∫dx</button></div>
-      <div class="key-wrapper"><div class="key-labels"><span class="sub-2nd">Σ</span></div><button class="btn" onclick="execSummation()">Σ</button></div>
+      <div class="key-wrapper"><div class="key-labels"><span class="sub-2nd">Variable</span></div><button class="btn" onclick="appendVal('X')">X,θ,t</button></div>
       <div class="key-wrapper"><div class="key-labels"><span class="sub-2nd">INS</span></div><button class="btn gray" onclick="backspace()">del</button></div>
 
       <div class="key-wrapper"><div class="key-labels"><span class="sub-2nd">{</span><span class="sub-alpha">K</span></div><button class="btn" onclick="appendVal('(')">(</button></div>
@@ -409,16 +445,32 @@
     let is2nd = false;
     let isAlpha = false;
     let isEvaluated = false;
-    let isGraphVisible = false;
+    
+    let activeMode = 'calc'; // 'calc', 'graph', 'yedit', 'matrix'
 
     let historyStack = [];
     let historyIndex = -1;
 
     const mainLine = document.getElementById('main-line');
-    const histLine = document.getElementById('hist-line');
+    const histLog = document.getElementById('hist-log');
     const graphCanvas = document.getElementById('graph-viewport');
     const calcScreen = document.getElementById('calc-screen');
+    const modalYEdit = document.getElementById('modal-yedit');
+    const modalMatrix = document.getElementById('modal-matrix');
     const ctx = graphCanvas.getContext('2d');
+
+    function hideAllViews() {
+      calcScreen.style.display = 'none';
+      graphCanvas.style.display = 'none';
+      modalYEdit.style.display = 'none';
+      modalMatrix.style.display = 'none';
+    }
+
+    function showMainScreen() {
+      hideAllViews();
+      calcScreen.style.display = 'flex';
+      activeMode = 'calc';
+    }
 
     function updateDisplay(val) {
       mainLine.innerText = val || expr || '0';
@@ -442,12 +494,14 @@
     }
 
     function appendVal(val) {
+      if (activeMode !== 'calc') showMainScreen();
       if (isEvaluated) { expr = ''; isEvaluated = false; }
       expr += val;
       updateDisplay();
     }
 
     function insertFunc(func) {
+      if (activeMode !== 'calc') showMainScreen();
       if (isEvaluated) { expr = ''; isEvaluated = false; }
       expr += func + '(';
       updateDisplay();
@@ -464,11 +518,9 @@
 
     function clearAll() {
       expr = '';
-      histLine.innerText = '';
+      histLog.innerHTML = '';
       isEvaluated = false;
-      isGraphVisible = false;
-      graphCanvas.style.display = 'none';
-      calcScreen.style.display = 'flex';
+      showMainScreen();
       updateDisplay('0');
     }
 
@@ -484,14 +536,13 @@
       updateDisplay();
     }
 
-    // Mathematical Operations Engine
     function execFactorial() {
       try {
         let n = parseInt(eval(parseExpr(expr)));
         if (isNaN(n) || n < 0) throw new Error();
         let f = 1;
         for (let i = 1; i <= n; i++) f *= i;
-        histLine.innerText = `${n}! =`;
+        addHistory(`${n}!`, f);
         expr = String(f);
         isEvaluated = true;
         updateDisplay();
@@ -504,7 +555,7 @@
         let h = 0.00001;
         let f = x => Math.pow(x, 2) + Math.sin(x);
         let deriv = (f(val + h) - f(val - h)) / (2 * h);
-        histLine.innerText = `d/dx(x²+sin x) [x=${val}] =`;
+        addHistory(`d/dx(x²+sin x)[${val}]`, deriv.toFixed(5));
         expr = String(Number(deriv.toFixed(5)));
         isEvaluated = true;
         updateDisplay();
@@ -521,20 +572,8 @@
           sum += f(a + i * h) * (i % 2 === 0 ? 2 : 4);
         }
         let integral = (h / 3) * sum;
-        histLine.innerText = `∫(sin+cos)dx [0,${b}] =`;
+        addHistory(`∫(sin+cos)[0,${b}]`, integral.toFixed(5));
         expr = String(Number(integral.toFixed(5)));
-        isEvaluated = true;
-        updateDisplay();
-      } catch(e) { updateDisplay('SYNTAX ERROR'); expr = ''; }
-    }
-
-    function execSummation() {
-      try {
-        let max = parseInt(eval(parseExpr(expr)) || 10);
-        let sum = 0;
-        for (let i = 1; i <= max; i++) sum += i * i;
-        histLine.innerText = `Σ(i²) [1..${max}] =`;
-        expr = String(sum);
         isEvaluated = true;
         updateDisplay();
       } catch(e) { updateDisplay('SYNTAX ERROR'); expr = ''; }
@@ -543,7 +582,9 @@
     function execReciprocal() {
       try {
         let v = eval(parseExpr(expr));
-        expr = String(Number((1 / v).toFixed(8)));
+        let res = Number((1 / v).toFixed(8));
+        addHistory(`1/(${expr})`, res);
+        expr = String(res);
         isEvaluated = true;
         updateDisplay();
       } catch(e) { updateDisplay('DIV BY 0'); expr = ''; }
@@ -570,13 +611,19 @@
       return p.replace(/i/g, 'Math.SQRT1_2');
     }
 
+    function addHistory(expression, result) {
+      const entry = document.createElement('div');
+      entry.className = 'history-entry';
+      entry.innerText = `${expression} = ${result}`;
+      histLog.appendChild(entry);
+      histLog.scrollTop = histLog.scrollHeight;
+    }
+
     function calculate() {
       try {
         if (!expr) return;
         historyStack.push(expr);
         historyIndex = historyStack.length;
-
-        histLine.innerText = expr.replace(/TRIG_/g, '').replace(/Math\./g, '') + ' =';
 
         let parsed = parseExpr(expr);
         let res = Function('"use strict"; return (' + parsed + ')')();
@@ -585,6 +632,7 @@
           res = Number(res.toFixed(8));
         }
 
+        addHistory(expr.replace(/TRIG_/g, '').replace(/Math\./g, ''), res);
         expr = String(res);
         isEvaluated = true;
         updateDisplay();
@@ -592,6 +640,103 @@
         updateDisplay('SYNTAX ERROR');
         expr = '';
       }
+    }
+
+    function openYEdit() {
+      hideAllViews();
+      modalYEdit.style.display = 'flex';
+      activeMode = 'yedit';
+    }
+
+    function openMatrix() {
+      hideAllViews();
+      modalMatrix.style.display = 'flex';
+      activeMode = 'matrix';
+    }
+
+    function runMatrixOp(op) {
+      showMainScreen();
+      let matA = [[1, 2], [3, 4]];
+      let matB = [[5, 6], [7, 8]];
+
+      if (op === 'det') {
+        let det = matA[0][0]*matA[1][1] - matA[0][1]*matA[1][0];
+        addHistory('det([A])', det);
+        updateDisplay(String(det));
+      } else if (op === 'inv') {
+        let det = matA[0][0]*matA[1][1] - matA[0][1]*matA[1][0];
+        let inv = `[[${matA[1][1]/det}, ${-matA[0][1]/det}], [${-matA[1][0]/det}, ${matA[0][0]/det}]]`;
+        addHistory('inv([A])', inv);
+        updateDisplay(inv);
+      } else if (op === 'mult') {
+        let mult = `[[19, 22], [43, 50]]`;
+        addHistory('[A]x[B]', mult);
+        updateDisplay(mult);
+      }
+    }
+
+    function toggleGraph() {
+      if (activeMode === 'graph') {
+        showMainScreen();
+      } else {
+        hideAllViews();
+        graphCanvas.style.display = 'block';
+        activeMode = 'graph';
+        drawGraph();
+      }
+    }
+
+    function drawGraph() {
+      graphCanvas.width = graphCanvas.offsetWidth;
+      graphCanvas.height = graphCanvas.offsetHeight;
+      ctx.clearRect(0, 0, graphCanvas.width, graphCanvas.height);
+
+      const w = graphCanvas.width;
+      const h = graphCanvas.height;
+
+      ctx.strokeStyle = '#233223';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < w; x += 15) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+      }
+      for (let y = 0; y < h; y += 15) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      }
+
+      ctx.strokeStyle = '#8fb38b';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2);
+      ctx.moveTo(w / 2, 0); ctx.lineTo(w / 2, h);
+      ctx.stroke();
+
+      let y1Func = document.getElementById('y1-in').value || 'sin(x)';
+      plotFunction(y1Func, '#8fb38b');
+    }
+
+    function plotFunction(formula, color) {
+      const w = graphCanvas.width;
+      const h = graphCanvas.height;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+
+      let cleanFormula = formula
+        .replace(/sin/g, 'Math.sin')
+        .replace(/cos/g, 'Math.cos')
+        .replace(/tan/g, 'Math.tan')
+        .replace(/\^/g, '**');
+
+      for (let px = 0; px < w; px++) {
+        let x = (px - w / 2) / 15;
+        try {
+          let y = eval(cleanFormula);
+          let py = h / 2 - (y * 15);
+          if (px === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        } catch(e) {}
+      }
+      ctx.stroke();
     }
 
     function nav(dir) {
@@ -606,61 +751,8 @@
       }
     }
 
-    function triggerGraph() {
-      isGraphVisible = !isGraphVisible;
-      if (isGraphVisible) {
-        calcScreen.style.display = 'none';
-        graphCanvas.style.display = 'block';
-        drawGraph();
-      } else {
-        graphCanvas.style.display = 'none';
-        calcScreen.style.display = 'flex';
-      }
-    }
-
-    function drawGraph() {
-      graphCanvas.width = graphCanvas.offsetWidth;
-      graphCanvas.height = graphCanvas.offsetHeight;
-      ctx.clearRect(0, 0, graphCanvas.width, graphCanvas.height);
-
-      const w = graphCanvas.width;
-      const h = graphCanvas.height;
-
-      // Draw Grid Lines
-      ctx.strokeStyle = '#233223';
-      ctx.lineWidth = 1;
-      for (let x = 0; x < w; x += 15) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
-      }
-      for (let y = 0; y < h; y += 15) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
-      }
-
-      // Draw Axis
-      ctx.strokeStyle = '#8fb38b';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2);
-      ctx.moveTo(w / 2, 0); ctx.lineTo(w / 2, h);
-      ctx.stroke();
-
-      // Plot Graph Function
-      ctx.strokeStyle = '#8fb38b';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-
-      for (let px = 0; px < w; px++) {
-        let x = (px - w / 2) / 10;
-        let y = Math.sin(x) * (x * 0.4);
-        let py = h / 2 - (y * 15);
-        if (px === 0) ctx.moveTo(px, py);
-        else ctx.lineTo(px, py);
-      }
-      ctx.stroke();
-    }
-
-    // Keyboard Bindings
     document.addEventListener('keydown', (e) => {
+      if (activeMode !== 'calc') return;
       if ((e.key >= '0' && e.key <= '9') || e.key === '.') appendVal(e.key);
       if (['+', '-', '*', '/'].includes(e.key)) appendVal(e.key);
       if (e.key === 'Enter' || e.key === '=') calculate();
